@@ -4,7 +4,7 @@
 //});
 
 module.exports = {
-  publicPath: process.env.NODE_ENV === "production" ? "/Al-Radwan/" : "/",
+  publicPath: process.env.NODE_ENV === "production" ? "/ALRadwan/" : "/",
   devServer: {
     historyApiFallback: true, // Enable history fallback in development
   },

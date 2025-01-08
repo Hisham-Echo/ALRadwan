@@ -7,10 +7,11 @@
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
-    "deploy": "gh-pages -d dist -r https://github.com/hisham-echo/Al-Radwan.git"
+    "deploy": "gh-pages -d dist -r https://github.com/Hisham-Echo/ALRadwan.git"
   },
   "dependencies": {
     "core-js": "^3.8.3",
+    "gh": "^2.8.9",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3",
     "vuex": "^4.0.0"
