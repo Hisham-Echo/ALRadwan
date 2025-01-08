@@ -1,3 +1,3 @@
-# AlRadwan managment system
+# ALRadwan managment system
 
-## [Live Preview](https://hisham-echo.github.io/Al-Radwan/#/)
+## [Live Preview](https://hisham-echo.github.io/ALRadwan/#/)
