@@ -2,7 +2,7 @@
   <nav>
     <h1>
       <img src="./assets/logo.png" alt="logo" />
-      <p>AlRadwan</p>
+      <p>ALRadwan</p>
     </h1>
     <router-link to="/">Home</router-link>
     <router-link to="/cashier">Cashier</router-link>
@@ -63,6 +63,7 @@ nav {
       margin: 0;
       position: relative;
       padding-bottom: 10px;
+      font-size: 23px;
 
       &::before {
         position: absolute;

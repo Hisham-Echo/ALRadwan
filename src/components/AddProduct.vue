@@ -117,6 +117,7 @@ button {
   align-self: flex-end;
   padding: 10px;
   margin: 20px;
+  // border: none;
   border: 1px solid #00000066;
   border-radius: 5px;
   justify-self: space-evenly;
@@ -129,9 +130,9 @@ button {
 }
 
 .cancel {
-  color: white;
+  color: #ff3c3c;
   font-weight: bold;
-  background-color: #ff3c3c;
+  background-color: white;
 }
 
 .errors {
@@ -161,58 +162,16 @@ export default {
   },
   methods: {
     addProduct: function () {
+      // validate code
+      // validate its a number
+      // if(this.formValues.code){}
+      // validate its unique
+      // if(){}
       this.Inventory.push({ ...this.formValues });
       this.$emit("update-inventory", this.Inventory); // Emit a 'update-inventory' event to the parent
       localStorage.setItem("Inventory", JSON.stringify(this.Inventory));
-      this.exportData(); // Save the inventory to a local file
+      this.$emit("export-data", this.Inventory);
       this.resetForm();
-    },
-    // Save localStorage to a file
-    exportData() {
-      const localStorageData = {};
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        const value = localStorage.getItem(key);
-        localStorageData[key] = value;
-      }
-
-      const blob = new Blob([JSON.stringify(localStorageData, null, 2)], {
-        type: "application/json",
-      });
-      const url = URL.createObjectURL(blob);
-
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "localStorage.json"; // File name
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-
-      URL.revokeObjectURL(url);
-    },
-    // Load data into localStorage from a file
-    async importData(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = () => {
-        try {
-          const data = JSON.parse(reader.result);
-
-          // Populate localStorage with the data
-          Object.keys(data).forEach((key) => {
-            localStorage.setItem(key, data[key]);
-          });
-
-          // Reload inventory data from localStorage if necessary
-          this.Inventory = JSON.parse(localStorage.getItem("Inventory")) || [];
-          alert("Data successfully loaded into localStorage!");
-        } catch (error) {
-          alert("Invalid file format. Please upload a valid JSON file.");
-        }
-      };
-      reader.readAsText(file);
     },
     closeComponent: function () {
       this.$emit("close"); // Emit a 'close' event to the parent

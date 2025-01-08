@@ -30,11 +30,14 @@
       :Inventory="Inventory"
       v-if="isAddProductVisible"
       @update-inventory="updateInventory"
+      @export-data="exportData"
       @close="toggleChildComponent"
     />
     <EditProduct
       :Inventory="Inventory"
       v-if="isEditProductVisible"
+      @update-inventory="updateInventory"
+      @export-data="exportData"
       @close="toggleChildComponent"
     />
     <SearchProduct
@@ -45,6 +48,8 @@
     <DeleteProduct
       :Inventory="Inventory"
       v-if="isDeleteProductVisible"
+      @update-inventory="updateInventory"
+      @export-data="exportData"
       @close="toggleChildComponent"
     />
     <!-- start display -->
@@ -91,7 +96,7 @@ button {
   margin: 0 5px;
   width: 150px;
   cursor: pointer;
-  opacity: 0.75;
+  opacity: 0.7;
   transition: opacity 0.2s ease-in-out;
   border-radius: 5px;
 
@@ -109,6 +114,10 @@ button {
 
   &:nth-of-type(3) {
     background-color: #e2f817;
+  }
+
+  &:nth-of-type(4) {
+    background-color: #25e6e6;
   }
 
   &:last-of-type {
@@ -194,6 +203,30 @@ export default {
       } else if (event.target.classList.contains("del")) {
         this.isDeleteProductVisible = !this.isDeleteProductVisible; // Toggle delete visibility
       }
+    },
+    // Save localStorage to a file
+    exportData() {
+      const localStorageData = {};
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        const value = localStorage.getItem(key);
+        localStorageData[key] = value;
+      }
+
+      const blob = new Blob([JSON.stringify(localStorageData, null, 2)], {
+        type: "application/json",
+      });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      const date = new Date();
+      a.download = `DATA@${date.toISOString()}.json`; // File name
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      URL.revokeObjectURL(url);
     },
     // Trigger the hidden file input for uploading data
     triggerFileInput() {

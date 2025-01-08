@@ -1,14 +1,14 @@
 <!-- import AddProduct from '@/components/AddProduct.vue'; -->
 <template>
-  <div class="AddProduct">
+  <div class="delProduct">
     <form>
       <div class="input">
-        <h2>Add Products</h2>
+        <h2>Delete Products</h2>
         <div class="field">
           <label for="code">Code</label>
           <input type="text" name="code" id="code" v-model="formValues.code" />
         </div>
-        <div class="field">
+        <!-- <div class="field">
           <label for="name">Name</label>
           <input type="text" name="name" id="name" v-model="formValues.name" />
         </div>
@@ -56,16 +56,18 @@
             id="vendor"
             v-model="formValues.vendor"
           />
-        </div>
+        </div> -->
       </div>
-      <button @click.prevent="addProduct" class="add">ADD</button>
-      <button class="cancel" @click.prevent="closeComponent">CLOSE</button>
+      <div>
+        <button @click.prevent="delProduct" class="delete">DELETE</button>
+        <button class="cancel" @click.prevent="closeComponent">CLOSE</button>
+      </div>
     </form>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.AddProduct {
+.delProduct {
   width: 100vw;
   height: 100vh;
   position: absolute;
@@ -83,7 +85,7 @@ form {
   min-width: 450px;
   max-width: 50vw;
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: column nowrap;
   justify-content: center;
   // align-items: center;
 }
@@ -96,7 +98,7 @@ input {
 }
 
 .input h2 {
-  background-color: #43fda9;
+  background-color: #fd6363;
   margin: 0;
   padding: 15px;
 }
@@ -119,16 +121,16 @@ button {
   justify-self: space-evenly;
 }
 
-.add {
-  background-color: #1e9f4c;
+.delete {
+  background-color: #fd5656;
   color: white;
   font-weight: bold;
 }
 
 .cancel {
-  color: white;
+  color: #ff3c3c;
   font-weight: bold;
-  background-color: rgb(255, 60, 60);
+  background-color: white;
 }
 </style>
 
@@ -140,22 +142,39 @@ export default {
       Inventory: [],
       formValues: {
         code: "",
-        name: "",
-        category: "",
-        quantity: "",
-        pricePerPack: "",
-        pricePerUnit: "",
-        vendor: "",
       },
     };
   },
   methods: {
-    addProduct: function () {
-      // TODO: validate form inputs
-      this.Inventory.push(this.formValues);
-      localStorage.setItem("Inventory", JSON.stringify(this.Inventory));
-      this.resetForm();
-      // this.$emit("add");
+    delProduct: function () {
+      for (let i = 0; i < this.Inventory.length; i++) {
+        // find product
+        if (this.Inventory[i].code == this.formValues.code) {
+          // generate message
+          let product = ``;
+          Object.keys(this.Inventory[i]).forEach((key) => {
+            product += `${key}: ${this.Inventory[i][key]} \n`;
+          });
+          // confirm delete
+          const flag = confirm(
+            `Are u sure you want to delete this product \n${product}`
+          );
+          // true => delete and save data
+          if (flag) {
+            this.Inventory.splice(i, 1);
+            this.$emit("update-inventory", this.Inventory); // Emit a 'update-inventory' event to the parent
+            localStorage.setItem("Inventory", JSON.stringify(this.Inventory));
+            this.$emit("export-data", this.Inventory); // Emit a 'export-data' event to the parent
+            this.resetForm();
+            break;
+          } // false => stop operation
+          else {
+            break;
+          }
+        } else {
+          continue;
+        }
+      }
     },
     closeComponent: function () {
       this.$emit("close"); // Emit a 'close' event to the parent
@@ -163,18 +182,12 @@ export default {
     resetForm: function () {
       this.formValues = {
         code: "",
-        name: "",
-        category: "",
-        quantity: "",
-        pricePerPack: "",
-        pricePerUnit: "",
-        vendor: "",
       };
     },
   },
-  // props: [this.Inventory],
   mounted() {
-    this.Inventory = JSON.parse(localStorage.getItem("Inventory"));
+    const savedInventory = JSON.parse(localStorage.getItem("Inventory"));
+    this.Inventory = savedInventory ? savedInventory : []; // Initialize as an empty array if null
   },
 };
 </script>

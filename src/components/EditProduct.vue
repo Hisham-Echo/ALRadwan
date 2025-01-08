@@ -1,9 +1,9 @@
 <!-- import AddProduct from '@/components/AddProduct.vue'; -->
 <template>
-  <div class="AddProduct">
+  <div class="EditProduct">
     <form>
       <div class="input">
-        <h2>Add Products</h2>
+        <h2>Edit Products</h2>
         <div class="field">
           <label for="code">Code</label>
           <input type="text" name="code" id="code" v-model="formValues.code" />
@@ -58,14 +58,14 @@
           />
         </div>
       </div>
-      <button @click.prevent="addProduct" class="add">ADD</button>
+      <button @click.prevent="editProduct" class="edit">EDIT</button>
       <button class="cancel" @click.prevent="closeComponent">CLOSE</button>
     </form>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.AddProduct {
+.EditProduct {
   width: 100vw;
   height: 100vh;
   position: absolute;
@@ -119,16 +119,16 @@ button {
   justify-self: space-evenly;
 }
 
-.add {
+.edit {
   background-color: #1e9f4c;
   color: white;
   font-weight: bold;
 }
 
 .cancel {
-  color: white;
+  color: #ff3c3c;
   font-weight: bold;
-  background-color: rgb(255, 60, 60);
+  background-color: white;
 }
 </style>
 
@@ -150,12 +150,12 @@ export default {
     };
   },
   methods: {
-    addProduct: function () {
+    editProduct: function () {
       // TODO: validate form inputs
-      this.Inventory.push(this.formValues);
-      localStorage.setItem("Inventory", JSON.stringify(this.Inventory));
-      this.resetForm();
-      // this.$emit("add");
+      // this.$emit("update-inventory", this.Inventory); // Emit a 'update-inventory' event to the parent
+      // localStorage.setItem("Inventory", JSON.stringify(this.Inventory));
+      // this.$emit("export-data", this.Inventory);
+      // this.resetForm();
     },
     closeComponent: function () {
       this.$emit("close"); // Emit a 'close' event to the parent
@@ -174,7 +174,8 @@ export default {
   },
   // props: [this.Inventory],
   mounted() {
-    this.Inventory = JSON.parse(localStorage.getItem("Inventory"));
+    const savedInventory = JSON.parse(localStorage.getItem("Inventory"));
+    this.Inventory = savedInventory ? savedInventory : []; // Initialize as an empty array if null
   },
 };
 </script>

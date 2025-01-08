@@ -11,7 +11,9 @@ export default {
   name: "CashierView",
   data() {
     return {
+      customerCode: "",
       cart: [],
+      total: "",
     };
   },
 };
