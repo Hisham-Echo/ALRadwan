@@ -1,6 +1,5 @@
-<!-- import AddProduct from '@/components/AddProduct.vue'; -->
 <template>
-  <div class="delProduct">
+  <div class="delProduct overlay">
     <form>
       <div class="input">
         <h2>Delete Products</h2>
@@ -8,55 +7,6 @@
           <label for="code">Code</label>
           <input type="text" name="code" id="code" v-model="formValues.code" />
         </div>
-        <!-- <div class="field">
-          <label for="name">Name</label>
-          <input type="text" name="name" id="name" v-model="formValues.name" />
-        </div>
-        <div class="field">
-          <label for="name">Category</label>
-          <input
-            type="text"
-            name="category"
-            id="category"
-            v-model="formValues.category"
-          />
-        </div>
-        <div class="field">
-          <label for="quantity">Quantity</label>
-          <input
-            type="text"
-            name="quantity"
-            id="quantity"
-            v-model="formValues.quantity"
-          />
-        </div>
-        <div class="field">
-          <label for="ppp">Price per pack</label>
-          <input
-            type="text"
-            name="ppp"
-            id="ppp"
-            v-model="formValues.pricePerPack"
-          />
-        </div>
-        <div class="field">
-          <label for="ppu">Price per unit</label>
-          <input
-            type="text"
-            name="ppu"
-            id="ppu"
-            v-model="formValues.pricePerUnit"
-          />
-        </div>
-        <div class="field">
-          <label for="vendor">Vendor</label>
-          <input
-            type="text"
-            name="vendor"
-            id="vendor"
-            v-model="formValues.vendor"
-          />
-        </div> -->
       </div>
       <div>
         <button @click.prevent="delProduct" class="delete">DELETE</button>
@@ -67,20 +17,8 @@
 </template>
 
 <style lang="scss" scoped>
-.delProduct {
-  width: 100vw;
-  height: 100vh;
-  position: absolute;
-  background-color: #00000077;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: grid;
-  justify-content: center;
-  align-content: center;
-}
-
 form {
+  border-radius: 10px;
   background-color: #80ccff;
   min-width: 450px;
   max-width: 50vw;
@@ -98,7 +36,9 @@ input {
 }
 
 .input h2 {
+  border-radius: 10px 10px 0 0;
   background-color: #fd6363;
+  color: white;
   margin: 0;
   padding: 15px;
 }

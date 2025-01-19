@@ -1,6 +1,5 @@
-<!-- import AddProduct from '@/components/SearchProduct.vue'; -->
 <template>
-  <div class="SearchProduct">
+  <div class="SearchProduct overlay">
     <form>
       <div class="input">
         <h2>Search Products</h2>
@@ -10,52 +9,36 @@
             type="search"
             name="search"
             id="search"
-            v-model="this.search"
+            v-model="this.searchField"
           />
         </div>
       </div>
-      <!-- <div class="list">
-        <header>
-          <span>Name</span>
-          <span>Price Per Pack</span>
-          <span>Price Per Unit</span>
-        </header>
-        <div
-          class="item"
-          @click.prevent="toggleActive"
-          v-for="(item, index) in Inventory"
-          :key="index"
-        >
-          <span>{{ item.name }}</span>
-          <span>{{ item.pricePerPack }}</span>
-          <span>{{ item.pricePerUnit }}</span>
-        </div>
-      </div> -->
-      <table>
-        <thead>
-          <tr>
-            <th>Code</th>
-            <th>Name</th>
-            <th>Category</th>
-            <th>Quantity</th>
-            <th>Price per pack</th>
-            <th>Price per unit</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="item" v-for="(item, index) in this.Inventory" :key="index">
-            <td>{{ item.code }}</td>
-            <td>{{ item.name }}</td>
-            <td>{{ item.category }}</td>
-            <td>{{ item.quantity }}</td>
-            <td>{{ item.pricePerPack }}</td>
-            <td>{{ item.pricePerUnit }}</td>
-          </tr>
-        </tbody>
-        <tfoot></tfoot>
-      </table>
+      <div class="display">
+        <table>
+          <thead>
+            <tr>
+              <th>Code</th>
+              <th>Name</th>
+              <th>Category</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              @click.prevent="toggleActive"
+              v-for="(item, index) in this.Inventory"
+              :key="index"
+              :id="item.code"
+            >
+              <td>{{ item.code }}</td>
+              <td>{{ item.name }}</td>
+              <td>{{ item.category }}</td>
+            </tr>
+          </tbody>
+          <tfoot></tfoot>
+        </table>
+      </div>
       <div>
-        <button @click.prevent="searchProduct" class="search">SEARCH</button>
+        <button @click.prevent="searchProduct" class="search">SELECT</button>
         <button class="cancel" @click.prevent="closeComponent">CLOSE</button>
       </div>
     </form>
@@ -80,19 +63,6 @@
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
-}
-
-.SearchProduct {
-  width: 100vw;
-  height: 100vh;
-  position: absolute;
-  background-color: #00000077;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: grid;
-  justify-content: center;
-  align-content: center;
 }
 
 form {
@@ -148,40 +118,53 @@ button {
 }
 
 .cancel {
-  color: white;
+  color: #ff3c3c;
   font-weight: bold;
-  background-color: rgb(255, 60, 60);
+  background-color: white;
 }
 .active {
   background-color: #e2f817dd;
 }
+// table
+.display {
+  width: calc(100% - 20px);
+  overflow-y: scroll;
+  padding: 0 0 0 10px;
+}
+
 table {
-  background-color: white;
-  margin: 10px;
+  width: 100%;
+  border: 1px solid red;
+  border: none;
   border-radius: 10px;
   height: 60%;
   overflow-y: scroll;
-  header,
-  .item {
-    // display: flex;
-    // flex-flow: row nowrap;
-    // justify-content: space-between;
-    align-items: center;
-    padding: 5px 20px;
-    border: 1px solid transparent;
-    border-bottom-color: #000000;
-  }
-  .item {
-    border-bottom-color: #00000033;
-    margin: 2px;
-    cursor: pointer;
-    transition: background-color ease-in-out 0.2s;
-    &:hover {
-      background-color: #e2f81755;
-    }
-    &.active {
-      background-color: #e2f817dd;
-    }
+}
+
+th {
+  background-color: #17f893;
+}
+
+td {
+  background-color: transparent;
+}
+
+td,
+th {
+  border: 1px solid transparent;
+  padding: 10px 5px;
+}
+
+tr {
+  background-color: white;
+}
+
+tr:hover {
+  cursor: pointer;
+  background-color: #a9f817aa;
+  transition: background-color 0.2s ease-in-out;
+  &.active {
+    background-color: #e2f817dd;
   }
 }
 </style>
@@ -193,17 +176,18 @@ export default {
     return {
       Inventory: [],
       searchField: "",
-      found: [],
+      selected: [],
     };
   },
   methods: {
     toggleActive: function (event) {
-      if (event.target.classList.contains("active")) {
-        event.target.classList.remove("active");
+      let parent = event.target.parentElement;
+      console.log(parent);
+      if (parent.classList.contains("active")) {
+        parent.classList.remove("active");
       } else {
-        event.target.classList.add("active");
+        parent.classList.add("active");
       }
-      // console.log(event.target);
     },
     searchProduct: function () {
       this.search;

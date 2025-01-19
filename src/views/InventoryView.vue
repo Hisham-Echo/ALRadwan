@@ -12,14 +12,14 @@
         Search Product
       </button>
 
-      <button class="load" @click.prevent="triggerFileInput">Load Data</button>
+      <!-- <button class="load" @click.prevent="triggerFileInput">Load Data</button>
       <input
         type="file"
         ref="fileInput"
         @change="loadLocalStorageFromFile"
         accept=".json"
         style="display: none"
-      />
+      /> -->
 
       <button class="del" @click.prevent="toggleChildComponent">
         Delete Product
@@ -99,25 +99,25 @@ button {
   opacity: 0.7;
   transition: opacity 0.2s ease-in-out;
   border-radius: 5px;
-
+  color: white;
   &:hover {
     opacity: 1;
   }
 
   &:first-of-type {
-    background-color: #43fda9;
+    background-color: #1cb36f;
   }
 
   &:nth-of-type(2) {
-    background-color: #29a8fc;
+    background-color: #1f80c0;
   }
 
   &:nth-of-type(3) {
-    background-color: #e2f817;
+    background-color: #9eaf01;
   }
 
   &:nth-of-type(4) {
-    background-color: #25e6e6;
+    background-color: #1423aa;
   }
 
   &:last-of-type {
@@ -160,14 +160,27 @@ tr:hover td {
   background-color: #17f89355;
   transition: background-color 0.2s ease-in-out;
 }
+
+.overlay {
+  width: 100%;
+  height: 100vh;
+  position: fixed;
+  background-color: #00000077;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: grid;
+  justify-content: center;
+  align-content: center;
+}
 </style>
 
 <script>
 // @ is an alias to /src
-import AddProduct from "@/components/AddProduct.vue";
-import EditProduct from "@/components/EditProduct.vue";
-import SearchProduct from "@/components/SearchProduct.vue";
-import DeleteProduct from "@/components/DeleteProduct.vue";
+import AddProduct from "@/components/product/AddProduct.vue";
+import EditProduct from "@/components/product/EditProduct.vue";
+import SearchProduct from "@/components/product/SearchProduct.vue";
+import DeleteProduct from "@/components/product/DeleteProduct.vue";
 
 export default {
   name: "InventoryView",
@@ -204,6 +217,40 @@ export default {
         this.isDeleteProductVisible = !this.isDeleteProductVisible; // Toggle delete visibility
       }
     },
+    // // Trigger the hidden file input for uploading data
+    // triggerFileInput() {
+    //   this.$refs.fileInput.click(); // Opens the file input dialog
+    // },
+    // // Load data into localStorage from a file
+    // async loadLocalStorageFromFile(event) {
+    //   const file = event.target.files[0];
+    //   if (!file) return;
+
+    //   const reader = new FileReader();
+    //   reader.onload = () => {
+    //     try {
+    //       const data = JSON.parse(reader.result);
+
+    //       // Populate localStorage with the data
+    //       Object.keys(data).forEach((key) => {
+    //         localStorage.setItem(key, data[key]);
+    //       });
+
+    //       // Reload inventory data from localStorage if necessary
+    //       this.Inventory = JSON.parse(localStorage.getItem("Inventory")) || [];
+    //       alert("Data successfully loaded into localStorage!");
+    //     } catch (error) {
+    //       alert("Invalid file format. Please upload a valid JSON file.");
+    //     }
+    //   };
+    //   reader.readAsText(file);
+    //   // Reset the input value to allow re-uploading the same file
+    //   event.target.value = "";
+    // },
+    updateInventory(newInventory) {
+      this.Inventory = newInventory;
+      localStorage.setItem("Inventory", JSON.stringify(this.Inventory));
+    },
     // Save localStorage to a file
     exportData() {
       const localStorageData = {};
@@ -227,40 +274,6 @@ export default {
       document.body.removeChild(a);
 
       URL.revokeObjectURL(url);
-    },
-    // Trigger the hidden file input for uploading data
-    triggerFileInput() {
-      this.$refs.fileInput.click(); // Opens the file input dialog
-    },
-    // Load data into localStorage from a file
-    async loadLocalStorageFromFile(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = () => {
-        try {
-          const data = JSON.parse(reader.result);
-
-          // Populate localStorage with the data
-          Object.keys(data).forEach((key) => {
-            localStorage.setItem(key, data[key]);
-          });
-
-          // Reload inventory data from localStorage if necessary
-          this.Inventory = JSON.parse(localStorage.getItem("Inventory")) || [];
-          alert("Data successfully loaded into localStorage!");
-        } catch (error) {
-          alert("Invalid file format. Please upload a valid JSON file.");
-        }
-      };
-      reader.readAsText(file);
-      // Reset the input value to allow re-uploading the same file
-      event.target.value = "";
-    },
-    updateInventory(newInventory) {
-      this.Inventory = newInventory;
-      localStorage.setItem("Inventory", JSON.stringify(this.Inventory));
     },
   },
   computed: {

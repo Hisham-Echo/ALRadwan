@@ -101,7 +101,14 @@ nav {
 </style>
 
 <script>
+// import InventoryView from './views/InventoryView.vue';
+
 export default {
+  data() {
+    return {
+      Inventory: [],
+    };
+  },
   // props: ["Inventory"],
   // mounted() {
   //   // Check data exists

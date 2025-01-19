@@ -1,6 +1,5 @@
-<!-- import AddProduct from '@/components/AddProduct.vue'; -->
 <template>
-  <div class="EditProduct">
+  <div class="EditProduct overlay">
     <form>
       <div class="input">
         <h2>Edit Products</h2>
@@ -65,20 +64,8 @@
 </template>
 
 <style lang="scss" scoped>
-.EditProduct {
-  width: 100vw;
-  height: 100vh;
-  position: absolute;
-  background-color: #00000077;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: grid;
-  justify-content: center;
-  align-content: center;
-}
-
 form {
+  border-radius: 10px;
   background-color: #80ccff;
   min-width: 450px;
   max-width: 50vw;
@@ -96,7 +83,9 @@ input {
 }
 
 .input h2 {
-  background-color: #43fda9;
+  border-radius: 10px 10px 0 0;
+  background-color: #0077d8;
+  color: white;
   margin: 0;
   padding: 15px;
 }
@@ -120,7 +109,7 @@ button {
 }
 
 .edit {
-  background-color: #1e9f4c;
+  background-color: #0077d8;
   color: white;
   font-weight: bold;
 }

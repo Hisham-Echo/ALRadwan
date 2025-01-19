@@ -1,9 +1,8 @@
-import AddProduct from '@/components/AddProduct.vue';
 <template>
-  <div class="AddProduct">
+  <div class="AddAccount overlay">
     <form>
       <div class="input">
-        <h2>Add Products</h2>
+        <h2>Add Account</h2>
         <div class="field">
           <label for="code">Code</label>
           <input type="text" name="code" id="code" v-model="formValues.code" />
@@ -13,70 +12,39 @@ import AddProduct from '@/components/AddProduct.vue';
           <input type="text" name="name" id="name" v-model="formValues.name" />
         </div>
         <div class="field">
-          <label for="name">Category</label>
+          <label for="phone">Phone</label>
           <input
             type="text"
-            name="category"
-            id="category"
-            v-model="formValues.category"
+            name="phone"
+            id="phone"
+            v-model="formValues.phone"
           />
         </div>
         <div class="field">
-          <label for="quantity">Quantity</label>
+          <label for="address">Address</label>
           <input
             type="text"
-            name="quantity"
-            id="quantity"
-            v-model="formValues.quantity"
+            name="address"
+            id="address"
+            v-model="formValues.address"
           />
         </div>
         <div class="field">
-          <label for="ppp">Price per pack</label>
-          <input
-            type="text"
-            name="ppp"
-            id="ppp"
-            v-model="formValues.pricePerPack"
-          />
-        </div>
-        <div class="field">
-          <label for="ppu">Price per unit</label>
-          <input
-            type="text"
-            name="ppu"
-            id="ppu"
-            v-model="formValues.pricePerUnit"
-          />
-        </div>
-        <div class="field">
-          <label for="vendor">Vendor</label>
-          <input
-            type="text"
-            name="vendor"
-            id="vendor"
-            v-model="formValues.vendor"
-          />
+          <label for="due">Due</label>
+          <input type="text" name="due" id="due" v-model="formValues.due" />
         </div>
         <!-- <div class="errors">{{ validate }}</div> -->
       </div>
-      <button @click.prevent="addProduct" class="add">ADD</button>
+      <button @click.prevent="addAccount" class="add">ADD</button>
       <button class="cancel" @click.prevent="closeComponent">CLOSE</button>
     </form>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.AddProduct {
-  width: 100vw;
-  height: 100vh;
-  position: absolute;
-  background-color: #00000077;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: grid;
-  justify-content: center;
-  align-content: center;
+.AddAccount {
+  margin: 0;
+  padding: 0;
 }
 
 form {
@@ -99,7 +67,8 @@ input {
 
 .input h2 {
   border-radius: 10px 10px 0 0;
-  background-color: #43fda9;
+  background-color: #1fdb87;
+  color: white;
   margin: 0;
   padding: 15px;
 }
@@ -148,29 +117,23 @@ export default {
   name: "AddProduct",
   data() {
     return {
+      Accounts: [],
       Inventory: [],
       formValues: {
         code: "",
         name: "",
-        category: "",
-        quantity: "",
-        pricePerPack: "",
-        pricePerUnit: "",
-        vendor: "",
+        phone: "",
+        address: "",
+        due: "",
       },
     };
   },
   methods: {
-    addProduct: function () {
-      // validate code
-      // validate its a number
-      // if(this.formValues.code){}
-      // validate its unique
-      // if(){}
-      this.Inventory.push({ ...this.formValues });
-      this.$emit("update-inventory", this.Inventory); // Emit a 'update-inventory' event to the parent
-      localStorage.setItem("Inventory", JSON.stringify(this.Inventory));
-      this.$emit("export-data", this.Inventory);
+    addAccount: function () {
+      this.Accounts.push({ ...this.formValues });
+      this.$emit("update-accounts", this.Accounts); // Emit a 'update-inventory' event to the parent
+      localStorage.setItem("Accounts", JSON.stringify(this.Accounts));
+      this.$emit("export-data", this.Accounts);
       this.resetForm();
     },
     closeComponent: function () {
@@ -180,17 +143,17 @@ export default {
       this.formValues = {
         code: "",
         name: "",
-        category: "",
-        quantity: "",
-        pricePerPack: "",
-        pricePerUnit: "",
-        vendor: "",
+        phone: "",
+        address: "",
+        due: "",
       };
     },
   },
   mounted() {
     const savedInventory = JSON.parse(localStorage.getItem("Inventory"));
-    this.Inventory = savedInventory ? savedInventory : []; // Initialize as an empty array if null
+    this.Inventory = savedInventory ? savedInventory : []; // Initialize empty array if null
+    const savedAccounts = JSON.parse(localStorage.getItem("Accounts"));
+    this.Accounts = savedAccounts ? savedAccounts : []; // Initialize empty array if null
   },
 };
 </script>
