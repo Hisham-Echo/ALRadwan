@@ -2,7 +2,7 @@
   <div class="EditAccount overlay">
     <form>
       <div class="input">
-        <h2>Edit Products</h2>
+        <h2>Edit Accounts</h2>
         <div class="field">
           <label for="code">Code</label>
           <input type="text" name="code" id="code" v-model="formValues.code" />

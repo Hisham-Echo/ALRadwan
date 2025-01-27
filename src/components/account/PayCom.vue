@@ -1,22 +1,3 @@
-<!-- <template>
-  <div class="pay overlay"></div>
-</template> -->
-
-<!-- <style scoped></style> -->
-<!-- 
-<script>
-export default {
-  name: "PayCom",
-
-  data() {
-    return {};
-  },
-
-  mounted() {},
-
-  methods: {},
-};
-</script> -->
 <template>
   <div class="delAccount overlay">
     <form>
@@ -107,8 +88,10 @@ export default {
   name: "DeleteAccount",
   data() {
     return {
+      // ## main vars ##
       Accounts: [],
       Inventory: [],
+      // ###############
       formValues: {
         code: "",
         amount: "",
@@ -116,7 +99,28 @@ export default {
     };
   },
   methods: {
-    pay: function () {},
+    pay: function () {
+      const code = this.formValues.code;
+      const amount = this.formValues.amount;
+      // confirm
+      const check = confirm("Confirm Payment");
+      if (check) {
+        for (let i = 0; i < this.Accounts.length; i++) {
+          if (code == this.Accounts[i].code) {
+            // decrease the due
+            this.Accounts[i].due -= amount;
+            // save changes
+            this.$emit("update-accounts", this.Accounts); // Emit a 'update-inventory' event to the parent
+            localStorage.setItem("Accounts", JSON.stringify(this.Accounts));
+            this.$emit("export-data", this.Accounts);
+            this.resetForm();
+            break;
+          } else {
+            continue;
+          }
+        }
+      }
+    },
     closeComponent: function () {
       this.$emit("close"); // Emit a 'close' event to the parent
     },

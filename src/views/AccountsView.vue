@@ -192,14 +192,16 @@ export default {
   name: "AccountsView",
   data() {
     return {
+      // ## main vars ##
+      Inventory: [],
+      Accounts: [],
+      // ###############
+      TotalDue: "",
       isAddAccountVisible: false,
       isEditAccountVisible: false,
       isSearchAccountVisible: false,
       isDeleteAccountVisible: false,
       isPayVisible: false,
-      Inventory: [],
-      Accounts: [],
-      TotalDue: "",
     };
   },
   components: {

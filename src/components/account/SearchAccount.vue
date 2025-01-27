@@ -2,7 +2,7 @@
   <div class="SearchAccount overlay">
     <form>
       <div class="input">
-        <h2>Search Accountss</h2>
+        <h2>Search Accounts</h2>
         <div class="field">
           <!-- <label for="search">Search</label> -->
           <input
@@ -193,6 +193,7 @@ export default {
     searchAccount: function () {
       this.search;
     },
+    filter: function () {},
     closeComponent: function () {
       this.$emit("close"); // Emit a 'close' event to the parent
     },

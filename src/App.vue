@@ -49,14 +49,14 @@ nav {
   display: flex;
   flex-flow: column nowrap;
   align-items: start;
-  padding: 30px 0px;
+  padding: 15px 0px;
 
   h1 {
     margin: 0 auto;
 
     img {
       max-width: 80px;
-      // transform: rotate(180deg);
+      transform: rotate(180deg);
     }
 
     p {
@@ -101,22 +101,11 @@ nav {
 </style>
 
 <script>
-// import InventoryView from './views/InventoryView.vue';
-
 export default {
   data() {
     return {
       Inventory: [],
     };
   },
-  // props: ["Inventory"],
-  // mounted() {
-  //   // Check data exists
-  //   if (localStorage.getItem("Inventory")) {
-  //     console.log(localStorage.getItem("Inventory"));
-  //   } else {
-  //     console.log("HI");
-  //   }
-  // },
 };
 </script>

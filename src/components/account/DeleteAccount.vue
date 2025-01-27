@@ -2,7 +2,7 @@
   <div class="delAccount overlay">
     <form>
       <div class="input">
-        <h2>Delete Products</h2>
+        <h2>Delete Accounts</h2>
         <div class="field">
           <label for="code">Code</label>
           <input type="text" name="code" id="code" v-model="formValues.code" />
@@ -98,7 +98,7 @@ export default {
           });
           // confirm delete
           const flag = confirm(
-            `Are u sure you want to delete this product \n${account}`
+            `Are u sure you want to delete this account \n${account}`
           );
           // true => delete and save data
           if (flag) {

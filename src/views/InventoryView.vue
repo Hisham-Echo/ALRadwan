@@ -144,6 +144,22 @@ table {
 
 th {
   background-color: #17f893;
+  &:nth-of-type(1) {
+    width: 12%;
+  }
+  &:nth-of-type(2) {
+    width: 22%;
+  }
+  &:nth-of-type(3) {
+    width: 10%;
+  }
+  &:nth-of-type(4),
+  &:nth-of-type(5),
+  &:nth-of-type(6),
+  &:nth-of-type(7),
+  &:nth-of-type(8) {
+    width: 8%;
+  }
 }
 
 td {
@@ -217,36 +233,6 @@ export default {
         this.isDeleteProductVisible = !this.isDeleteProductVisible; // Toggle delete visibility
       }
     },
-    // // Trigger the hidden file input for uploading data
-    // triggerFileInput() {
-    //   this.$refs.fileInput.click(); // Opens the file input dialog
-    // },
-    // // Load data into localStorage from a file
-    // async loadLocalStorageFromFile(event) {
-    //   const file = event.target.files[0];
-    //   if (!file) return;
-
-    //   const reader = new FileReader();
-    //   reader.onload = () => {
-    //     try {
-    //       const data = JSON.parse(reader.result);
-
-    //       // Populate localStorage with the data
-    //       Object.keys(data).forEach((key) => {
-    //         localStorage.setItem(key, data[key]);
-    //       });
-
-    //       // Reload inventory data from localStorage if necessary
-    //       this.Inventory = JSON.parse(localStorage.getItem("Inventory")) || [];
-    //       alert("Data successfully loaded into localStorage!");
-    //     } catch (error) {
-    //       alert("Invalid file format. Please upload a valid JSON file.");
-    //     }
-    //   };
-    //   reader.readAsText(file);
-    //   // Reset the input value to allow re-uploading the same file
-    //   event.target.value = "";
-    // },
     updateInventory(newInventory) {
       this.Inventory = newInventory;
       localStorage.setItem("Inventory", JSON.stringify(this.Inventory));
@@ -281,8 +267,6 @@ export default {
       return quantity * price;
     },
   },
-  // props: ["Inventory"],
-  // watch: [this.Inventory],
   mounted() {
     const savedInventory = JSON.parse(localStorage.getItem("Inventory"));
     this.Inventory = savedInventory ? savedInventory : []; // Initialize empty array if null

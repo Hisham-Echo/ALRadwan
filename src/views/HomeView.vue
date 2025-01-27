@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Al-Radwan" />
+    <HelloWorld msg="Welcome to ALRadwan" />
     <button class="load" @click.prevent="triggerFileInput">Load Data</button>
     <input
       type="file"
@@ -14,6 +14,10 @@
 </template>
 
 <style lang="scss" scoped>
+.home img {
+  transform: rotate(180deg);
+}
+
 button {
   font-weight: bold;
   padding: 10px;
