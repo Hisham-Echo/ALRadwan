@@ -9,7 +9,8 @@
             type="search"
             name="search"
             id="search"
-            v-model="this.searchField"
+            v-model="searchField"
+            placeholder="Search product"
           />
         </div>
       </div>
@@ -24,10 +25,10 @@
           </thead>
           <tbody>
             <tr
-              @click.prevent="toggleActive"
-              v-for="(item, index) in this.Inventory"
+              v-for="(item, index) in filteredInventory"
               :key="index"
-              :id="item.code"
+              :class="{ active: isSelected(item) }"
+              @click.prevent="toggleActive(item)"
             >
               <td>{{ item.code }}</td>
               <td>{{ item.name }}</td>
@@ -180,28 +181,44 @@ export default {
     };
   },
   methods: {
-    toggleActive: function (event) {
-      let parent = event.target.parentElement;
-      console.log(parent);
-      if (parent.classList.contains("active")) {
-        parent.classList.remove("active");
+    toggleActive(item) {
+      const index = this.selected.findIndex(
+        (selectedItem) => selectedItem.code === item.code
+      );
+      if (index > -1) {
+        this.selected.splice(index, 1); // Deselect item
       } else {
-        parent.classList.add("active");
+        this.selected.push(item); // Select item
       }
     },
-    searchProduct: function () {
-      this.search;
+    isSelected(item) {
+      return this.selected.some(
+        (selectedItem) => selectedItem.code === item.code
+      );
     },
-    closeComponent: function () {
+    searchProduct() {
+      this.$emit("select", this.selected); // Emit selected items
+    },
+    closeComponent() {
       this.$emit("close"); // Emit a 'close' event to the parent
     },
-    resetForm: function () {
-      this.search = "";
+    resetForm() {
+      this.searchField = "";
+      this.selected = [];
     },
   },
   computed: {
-    searchItem: function () {
-      return "";
+    filteredInventory() {
+      if (!this.searchField) return this.Inventory;
+
+      const searchQuery = this.searchField.toLowerCase();
+
+      return this.Inventory.filter(
+        (item) =>
+          item.code.toLowerCase().includes(searchQuery) ||
+          item.name.toLowerCase().includes(searchQuery) ||
+          item.category.toLowerCase().includes(searchQuery)
+      );
     },
   },
   // props: [this.Inventory],

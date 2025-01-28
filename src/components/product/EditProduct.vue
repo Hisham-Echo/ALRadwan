@@ -2,17 +2,23 @@
   <div class="EditProduct overlay">
     <form>
       <div class="input">
-        <h2>Edit Products</h2>
+        <h2>Edit Product</h2>
         <div class="field">
           <label for="code">Code</label>
-          <input type="text" name="code" id="code" v-model="formValues.code" />
+          <input
+            type="text"
+            name="code"
+            id="code"
+            v-model="formValues.code"
+            readonly
+          />
         </div>
         <div class="field">
           <label for="name">Name</label>
           <input type="text" name="name" id="name" v-model="formValues.name" />
         </div>
         <div class="field">
-          <label for="name">Category</label>
+          <label for="category">Category</label>
           <input
             type="text"
             name="category"
@@ -30,7 +36,7 @@
           />
         </div>
         <div class="field">
-          <label for="ppp">Price per pack</label>
+          <label for="ppp">Price per Pack</label>
           <input
             type="text"
             name="ppp"
@@ -39,7 +45,7 @@
           />
         </div>
         <div class="field">
-          <label for="ppu">Price per unit</label>
+          <label for="ppu">Price per Unit</label>
           <input
             type="text"
             name="ppu"
@@ -57,7 +63,7 @@
           />
         </div>
       </div>
-      <button @click.prevent="editProduct" class="edit">EDIT</button>
+      <button @click.prevent="editProduct" class="edit">SAVE</button>
       <button class="cancel" @click.prevent="closeComponent">CLOSE</button>
     </form>
   </div>
@@ -124,6 +130,12 @@ button {
 <script>
 export default {
   name: "EditProduct",
+  props: {
+    selectedProduct: {
+      type: Object,
+      required: true,
+    },
+  },
   data() {
     return {
       Inventory: [],
@@ -139,17 +151,44 @@ export default {
     };
   },
   methods: {
-    editProduct: function () {
-      // TODO: validate form inputs
-      // this.$emit("update-inventory", this.Inventory); // Emit a 'update-inventory' event to the parent
-      // localStorage.setItem("Inventory", JSON.stringify(this.Inventory));
-      // this.$emit("export-data", this.Inventory);
-      // this.resetForm();
+    editProduct() {
+      // Validate form inputs
+      if (
+        !this.formValues.code ||
+        !this.formValues.name ||
+        !this.formValues.category ||
+        !this.formValues.quantity ||
+        !this.formValues.pricePerPack ||
+        !this.formValues.pricePerUnit ||
+        !this.formValues.vendor
+      ) {
+        alert("Code, Name, and Quantity are required fields.");
+        return;
+      }
+
+      // Find and update the product in the inventory
+      const index = this.Inventory.findIndex(
+        (product) => product.code === this.formValues.code
+      );
+
+      const check = confirm("Confirm editing the product");
+
+      if (index > -1 && check) {
+        this.Inventory[index] = { ...this.formValues };
+        localStorage.setItem("Inventory", JSON.stringify(this.Inventory));
+
+        // Emit the updated inventory to the parent component
+        this.$emit("update-inventory", this.Inventory);
+        this.$emit("export-data", this.Inventory);
+        this.closeComponent();
+      } else {
+        alert("Product not found.\nOperation canceled");
+      }
     },
-    closeComponent: function () {
-      this.$emit("close"); // Emit a 'close' event to the parent
+    closeComponent() {
+      this.$emit("close"); // Notify the parent to close the component
     },
-    resetForm: function () {
+    resetForm() {
       this.formValues = {
         code: "",
         name: "",
@@ -161,10 +200,15 @@ export default {
       };
     },
   },
-  // props: [this.Inventory],
   mounted() {
+    // Load the inventory from local storage
     const savedInventory = JSON.parse(localStorage.getItem("Inventory"));
-    this.Inventory = savedInventory ? savedInventory : []; // Initialize as an empty array if null
+    this.Inventory = savedInventory ? savedInventory : [];
+
+    // Pre-fill the form with the selected product data
+    if (this.selectedProduct) {
+      this.formValues = { ...this.selectedProduct };
+    }
   },
 };
 </script>

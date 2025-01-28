@@ -11,16 +11,6 @@
       <button class="search" @click.prevent="toggleChildComponent">
         Search Product
       </button>
-
-      <!-- <button class="load" @click.prevent="triggerFileInput">Load Data</button>
-      <input
-        type="file"
-        ref="fileInput"
-        @change="loadLocalStorageFromFile"
-        accept=".json"
-        style="display: none"
-      /> -->
-
       <button class="del" @click.prevent="toggleChildComponent">
         Delete Product
       </button>
@@ -34,6 +24,7 @@
       @close="toggleChildComponent"
     />
     <EditProduct
+      :selectedProduct="currentProduct"
       :Inventory="Inventory"
       v-if="isEditProductVisible"
       @update-inventory="updateInventory"
@@ -67,7 +58,11 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(item, index) in this.Inventory" :key="index">
+          <tr
+            v-for="(item, index) in this.Inventory"
+            :key="index"
+            @click="handleRowClick(item)"
+          >
             <td>{{ item.code }}</td>
             <td>{{ item.name }}</td>
             <td>{{ item.category }}</td>
@@ -207,6 +202,7 @@ export default {
       isSearchProductVisible: false,
       isDeleteProductVisible: false,
       Inventory: [],
+      currentProduct: null,
     };
   },
   components: {
@@ -261,10 +257,12 @@ export default {
 
       URL.revokeObjectURL(url);
     },
-  },
-  computed: {
-    calcTotal: function (quantity, price) {
-      return quantity * price;
+    handleInventoryUpdate(updatedInventory) {
+      this.inventory = updatedInventory; // Update the inventory
+    },
+    handleRowClick(product) {
+      this.currentProduct = product; // Set the selected product
+      this.isEditProductVisible = true; // Open the EditProduct component
     },
   },
   mounted() {

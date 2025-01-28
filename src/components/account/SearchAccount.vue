@@ -4,12 +4,12 @@
       <div class="input">
         <h2>Search Accounts</h2>
         <div class="field">
-          <!-- <label for="search">Search</label> -->
           <input
             type="search"
             name="search"
             id="search"
-            v-model="this.searchField"
+            v-model="searchField"
+            placeholder="Search account"
           />
         </div>
       </div>
@@ -20,18 +20,20 @@
               <th>Code</th>
               <th>Name</th>
               <th>Phone</th>
+              <th>Due</th>
             </tr>
           </thead>
           <tbody>
             <tr
-              @click.prevent="toggleActive"
-              v-for="(item, index) in this.Accounts"
+              v-for="(account, index) in filteredAccounts"
               :key="index"
-              :id="item.code"
+              :class="{ active: isSelected(account) }"
+              @click.prevent="toggleActive(account)"
             >
-              <td>{{ item.code }}</td>
-              <td>{{ item.name }}</td>
-              <td>{{ item.phone }}</td>
+              <td>{{ account.code }}</td>
+              <td>{{ account.name }}</td>
+              <td>{{ account.phone }}</td>
+              <td>{{ account.due }}</td>
             </tr>
           </tbody>
           <tfoot></tfoot>
@@ -68,7 +70,7 @@
 form {
   border-radius: 10px;
   background-color: #80ccff;
-  min-width: 450px;
+  min-width: 500px;
   max-width: 100vw;
   height: 50vh;
   display: flex;
@@ -175,43 +177,54 @@ export default {
   data() {
     return {
       Accounts: [],
-      Inventory: [],
       searchField: "",
       selected: [],
     };
   },
+  computed: {
+    filteredAccounts() {
+      if (!this.searchField) return this.Accounts;
+
+      const searchQuery = this.searchField.toLowerCase();
+
+      return this.Accounts.filter(
+        (account) =>
+          account.code.toLowerCase().includes(searchQuery) ||
+          account.name.toLowerCase().includes(searchQuery) ||
+          account.phone.toLowerCase().includes(searchQuery)
+      );
+    },
+  },
   methods: {
-    toggleActive: function (event) {
-      let parent = event.target.parentElement;
-      console.log(parent);
-      if (parent.classList.contains("active")) {
-        parent.classList.remove("active");
+    toggleActive(account) {
+      const index = this.selected.findIndex(
+        (selectedItem) => selectedItem.code === account.code
+      );
+      if (index > -1) {
+        this.selected.splice(index, 1); // Remove from selection
       } else {
-        parent.classList.add("active");
+        this.selected.push(account); // Add to selection
       }
     },
-    searchAccount: function () {
-      this.search;
+    isSelected(account) {
+      return this.selected.some(
+        (selectedItem) => selectedItem.code === account.code
+      );
     },
-    filter: function () {},
-    closeComponent: function () {
-      this.$emit("close"); // Emit a 'close' event to the parent
+    searchAccount() {
+      this.$emit("select", this.selected); // Emit selected accounts to the parent
     },
-    resetForm: function () {
-      this.search = "";
+    closeComponent() {
+      this.$emit("close"); // Emit a close event to the parent
+    },
+    resetForm() {
+      this.searchField = "";
+      this.selected = [];
     },
   },
-  computed: {
-    searchItem: function () {
-      return "";
-    },
-  },
-  // props: [this.Inventory],
   mounted() {
-    const savedInventory = JSON.parse(localStorage.getItem("Inventory"));
-    this.Inventory = savedInventory ? savedInventory : []; // Initialize as an empty array if null
     const savedAccounts = JSON.parse(localStorage.getItem("Accounts"));
-    this.Accounts = savedAccounts ? savedAccounts : []; // Initialize empty array if null
+    this.Accounts = savedAccounts ? savedAccounts : []; // Load accounts from localStorage
   },
 };
 </script>

@@ -32,7 +32,7 @@
                   <th>Price per pack</th>
                   <th>Price per unit</th>
                   <th>Total</th>
-                  <th>Remaining</th>
+                  <th>Stock</th>
                 </tr>
               </thead>
               <tbody>

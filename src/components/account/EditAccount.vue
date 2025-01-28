@@ -5,7 +5,13 @@
         <h2>Edit Accounts</h2>
         <div class="field">
           <label for="code">Code</label>
-          <input type="text" name="code" id="code" v-model="formValues.code" />
+          <input
+            type="text"
+            name="code"
+            id="code"
+            v-model="formValues.code"
+            readonly
+          />
         </div>
         <div class="field">
           <label for="name">Name</label>
@@ -34,7 +40,7 @@
           <input type="text" name="due" id="due" v-model="formValues.due" />
         </div>
       </div>
-      <button @click.prevent="editAccount" class="edit">EDIT</button>
+      <button @click.prevent="editAccount" class="edit">SAVE</button>
       <button class="cancel" @click.prevent="closeComponent">CLOSE</button>
     </form>
   </div>
@@ -101,10 +107,15 @@ button {
 <script>
 export default {
   name: "EditAccount",
+  props: {
+    selectedAccount: {
+      type: Object,
+      required: true, // Pass the selected account for editing
+    },
+  },
   data() {
     return {
       Accounts: [],
-      Inventory: [],
       formValues: {
         code: "",
         name: "",
@@ -115,12 +126,42 @@ export default {
     };
   },
   methods: {
-    editAccount: function () {
-      // TODO: validate form inputs
-      // this.$emit("update-inventory", this.Inventory); // Emit a 'update-inventory' event to the parent
-      // localStorage.setItem("Inventory", JSON.stringify(this.Inventory));
-      // this.$emit("export-data", this.Inventory);
-      // this.resetForm();
+    editAccount() {
+      // Validate inputs
+      if (
+        !this.formValues.code ||
+        !this.formValues.name ||
+        !this.formValues.phone ||
+        !this.formValues.address ||
+        !this.formValues.due
+      ) {
+        alert("Please fill out all required fields.");
+        return;
+      }
+
+      // Find and update account in the Accounts array
+      const accountIndex = this.Accounts.findIndex(
+        (account) => account.code === this.formValues.code
+      );
+
+      const check = confirm("Confirm editing the account");
+
+      if (accountIndex !== -1 && check) {
+        this.Accounts.splice(accountIndex, 1, { ...this.formValues });
+
+        // Save updated data to localStorage
+        localStorage.setItem("Accounts", JSON.stringify(this.Accounts));
+
+        // Emit the updated accounts to the parent component
+        this.$emit("update-accounts", this.Accounts);
+        this.$emit("export-data", this.Accounts);
+
+        // Reset form and close
+        this.resetForm();
+        this.closeComponent();
+      } else {
+        alert("Account not found.\nOperation canceled");
+      }
     },
     closeComponent: function () {
       this.$emit("close"); // Emit a 'close' event to the parent
@@ -141,6 +182,10 @@ export default {
     this.Inventory = savedInventory ? savedInventory : []; // Initialize as an empty array if null
     const savedAccounts = JSON.parse(localStorage.getItem("Accounts"));
     this.Accounts = savedAccounts ? savedAccounts : []; // Initialize empty array if null
+    // Pre-fill the form with the selected product data
+    if (this.selectedAccount) {
+      this.formValues = { ...this.selectedAccount };
+    }
   },
 };
 </script>

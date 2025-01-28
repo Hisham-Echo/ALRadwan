@@ -27,6 +27,7 @@
       @close="toggleChildComponent"
     />
     <EditAccount
+      :selectedAccount="currentAccount"
       :Accounts="Accounts"
       v-if="isEditAccountVisible"
       @update-accounts="updateAccounts"
@@ -65,7 +66,11 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(item, index) in this.Accounts" :key="index">
+          <tr
+            v-for="(item, index) in this.Accounts"
+            :key="index"
+            @click="handleRowClick(item)"
+          >
             <td>{{ item.code }}</td>
             <td>{{ item.name }}</td>
             <td>{{ item.phone }}</td>
@@ -163,6 +168,7 @@ tr:hover td {
 }
 
 tfoot {
+  background-color: #17f89399;
   font-weight: bold;
 }
 
@@ -195,6 +201,7 @@ export default {
       // ## main vars ##
       Inventory: [],
       Accounts: [],
+      currentAccount: null, // Holds the currently selected account
       // ###############
       TotalDue: "",
       isAddAccountVisible: false,
@@ -267,6 +274,10 @@ export default {
     updateAccounts(newAccounts) {
       this.Accounts = newAccounts;
       localStorage.setItem("Accounts", JSON.stringify(this.Accounts));
+    },
+    handleRowClick(account) {
+      this.currentAccount = account; // Set the selected product
+      this.isEditAccountVisible = true; // Open the EditProduct component
     },
   },
   mounted() {
