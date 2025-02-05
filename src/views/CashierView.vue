@@ -118,10 +118,10 @@
                 v-model="amountPaid"
                 placeholder="Enter amount"
               />
-              <h4 v-if="amountPaid > 0 && productType == 'gomla'">
+              <h4 v-if="productType == 'gomla'">
                 Change: ${{ (amountPaid - calcTotalPrice).toFixed(2) }}
               </h4>
-              <h4 v-else-if="amountPaid > 0 && productType == '2ata3y'">
+              <h4 v-else-if="productType == '2ata3y'">
                 Change: ${{ (amountPaid - calcTotalPrice2).toFixed(2) }}
               </h4>
             </div>
@@ -222,12 +222,13 @@ export default {
           const inventoryItem = this.Inventory.find(
             (item) => item.code === cartItem.code
           );
-
+          // BUG
           if (inventoryItem) {
             if (inventoryItem.quantity >= cartItem.q) {
               inventoryItem.quantity -= cartItem.q; // Subtract quantity
             } else {
               alert(`Not enough stock for ${inventoryItem.name}`);
+              return;
             }
           }
         });
@@ -418,12 +419,32 @@ tfoot {
 }
 
 footer {
+  margin: 0 10px;
+  padding: 10px 20px;
   margin-top: 0px;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #0000ff11;
+  .sell {
+    button {
+      border-radius: 5px;
+      background-color: #ff00008a;
+      font-weight: bolder;
+      color: white;
+      border: none;
+      padding: 10px;
+      transition: background 0.2s ease-in-out;
+      &:hover {
+        background-color: red;
+      }
+    }
+  }
 }
 
 .total-section {
   padding: 10px;
-  background-color: #0000ff11;
   margin: 0 10px;
 }
 
