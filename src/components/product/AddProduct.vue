@@ -154,16 +154,49 @@ export default {
   },
   methods: {
     addProduct: function () {
-      // validate code
+      // validation
+      // Validate form inputs
+      if (
+        !this.formValues.code ||
+        !this.formValues.name ||
+        !this.formValues.category ||
+        !this.formValues.quantity ||
+        !this.formValues.pricePerPack ||
+        !this.formValues.pricePerUnit ||
+        !this.formValues.vendor
+      ) {
+        return alert("You must fill all fields.");
+      }
+      // code
+      let code = Number(this.formValues.code);
       // validate its a number
-      // if(this.formValues.code){}
+      if (isNaN(code)) {
+        return alert("Code must be numbers only");
+      }
       // validate its unique
-      // if(){}
+      for (let i = 0; i < this.Inventory.length; i++) {
+        if (this.Inventory[i].code == code) {
+          return alert("Code must be unique");
+        }
+      }
+      // quantity
+      let q = Number(this.formValues.quantity);
+      if (isNaN(q)) {
+        return alert("Quantity must be a number");
+      }
+      // price per pack & unit
+      let ppp = Number(this.formValues.pricePerPack);
+      let ppu = Number(this.formValues.pricePerUnit);
+      if (isNaN(ppp) || isNaN(ppu)) {
+        return alert("Prices must be numbers only");
+      }
+      // save
       this.Inventory.push({ ...this.formValues });
       this.$emit("update-inventory", this.Inventory); // Emit a 'update-inventory' event to the parent
       localStorage.setItem("Inventory", JSON.stringify(this.Inventory));
       this.$emit("export-data", this.Inventory);
       this.resetForm();
+      alert("Product added successfully");
     },
     closeComponent: function () {
       this.$emit("close"); // Emit a 'close' event to the parent

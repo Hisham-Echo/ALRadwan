@@ -127,6 +127,7 @@ export default {
   },
   methods: {
     editAccount() {
+      // Validation
       // Validate inputs
       if (
         !this.formValues.code ||
@@ -135,8 +136,30 @@ export default {
         !this.formValues.address ||
         !this.formValues.due
       ) {
-        alert("Please fill out all required fields.");
+        alert("Please fill out all fields.");
         return;
+      }
+      // code
+      let code = Number(this.formValues.code);
+      // validate its a number
+      if (isNaN(code)) {
+        return alert("Code must be numbers only");
+      }
+      // validate its unique
+      for (let i = 0; i < this.Accounts.length; i++) {
+        if (this.Accounts[i].code == code) {
+          return alert("Code must be unique");
+        }
+      }
+      // due
+      let d = Number(this.formValues.ddue);
+      if (isNaN(d)) {
+        return alert("Due must be a number");
+      }
+      // phone
+      let p = Number(this.formValues.phone);
+      if (isNaN(p)) {
+        return alert("Prices must be numbers only");
       }
 
       // Find and update account in the Accounts array

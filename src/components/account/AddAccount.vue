@@ -130,6 +130,40 @@ export default {
   },
   methods: {
     addAccount: function () {
+      // validation
+      // Validate form inputs
+      if (
+        !this.formValues.code ||
+        !this.formValues.name ||
+        !this.formValues.phone ||
+        !this.formValues.address ||
+        !this.formValues.due
+      ) {
+        return alert("You must fill all fields.");
+      }
+      // code
+      let code = Number(this.formValues.code);
+      // validate its a number
+      if (isNaN(code)) {
+        return alert("Code must be numbers only");
+      }
+      // validate its unique
+      for (let i = 0; i < this.Accounts.length; i++) {
+        if (this.Accounts[i].code == code) {
+          return alert("Code must be unique");
+        }
+      }
+      // phone
+      let p = Number(this.formValues.phone);
+      if (isNaN(p)) {
+        return alert("Phone number must be numbers only");
+      }
+      // due
+      let d = Number(this.formValues.due);
+      if (isNaN(d)) {
+        return alert("Due must be a number");
+      }
+      // save
       this.Accounts.push({ ...this.formValues });
       this.$emit("update-accounts", this.Accounts); // Emit a 'update-inventory' event to the parent
       localStorage.setItem("Accounts", JSON.stringify(this.Accounts));

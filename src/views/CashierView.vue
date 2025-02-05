@@ -4,18 +4,43 @@
     <form>
       <div class="display">
         <header>
-          <label for="c_code">Customer Code : </label>
-          <input type="text" name="c_code" id="c_code" v-model="customerCode" />
-          <div class="customer">{{ getCustomerName() }}</div>
-          <div>
-            <label for="p_code">Product Code : </label>
+          <div class="cCode">
+            <label for="c_code">Customer Code : </label>
             <input
               type="text"
-              name="p_code"
-              id="p_code"
-              v-model="productCode"
+              name="c_code"
+              id="c_code"
+              v-model="customerCode"
+              @click.prevent
             />
-            <button @click.prevent="addToCart">Add to Cart</button>
+          </div>
+          <div class="customer">{{ getCustomerName() }}</div>
+          <div class="precart">
+            <div class="paymentMethod">
+              <span>Payment Method: </span>
+              <select v-model="paymentMethod" id="payment-method">
+                <option value="cash">Cash</option>
+                <option value="2agel">2agel</option>
+              </select>
+            </div>
+            <div class="productCode">
+              <label for="p_code">Product Code : </label>
+              <input
+                type="text"
+                name="p_code"
+                id="p_code"
+                v-model="productCode"
+                placeholder="product code"
+              />
+              <button @click.prevent="addToCart">Add to Cart</button>
+            </div>
+            <div class="productType">
+              <span>Product Type: </span>
+              <select v-model="productType" id="productType">
+                <option value="gomla">Gomla</option>
+                <option value="2ata3y">2ata3y</option>
+              </select>
+            </div>
           </div>
         </header>
 
@@ -37,7 +62,16 @@
               </thead>
               <tbody>
                 <tr v-for="(item, index) in cart" :key="index">
-                  <td>{{ item.code }}</td>
+                  <td :id="item.code">
+                    <button
+                      class="remove"
+                      @click.prevent="removeFromCart"
+                      title="remove from cart"
+                    >
+                      X
+                    </button>
+                    {{ item.code }}
+                  </td>
                   <td>{{ item.name }}</td>
                   <td>{{ item.category }}</td>
                   <td>
@@ -55,9 +89,13 @@
                 </tr>
               </tbody>
               <tfoot>
-                <tr>
+                <tr v-if="productType == 'gomla'">
                   <td colspan="6">Total</td>
                   <td colspan="2">${{ calcTotalPrice.toFixed(2) }}</td>
+                </tr>
+                <tr v-else>
+                  <td colspan="6">Total</td>
+                  <td colspan="2">${{ calcTotalPrice2.toFixed(2) }}</td>
                 </tr>
               </tfoot>
             </table>
@@ -67,25 +105,29 @@
         <!-- Total and Payment -->
         <footer>
           <div class="total-section">
-            <p>Total: ${{ calcTotalPrice.toFixed(2) }}</p>
-            <label for="payment-method">Payment Method: </label>
-            <select v-model="paymentMethod" id="payment-method">
-              <option value="cash">Cash</option>
-              <option value="2agel">2agel</option>
-            </select>
-            <br />
-            <br />
+            <p v-if="productType == 'gomla'">
+              Total: ${{ calcTotalPrice.toFixed(2) }}
+            </p>
+            <p v-else>Total: ${{ calcTotalPrice2.toFixed(2) }}</p>
             <div v-if="paymentMethod === 'cash'">
               <label for="amount-paid">Amount Paid: </label>
               <input
                 type="number"
+                id="amount-paid"
+                name="amount-paid"
                 v-model="amountPaid"
                 placeholder="Enter amount"
               />
-              <h4 v-if="amountPaid > 0">
+              <h4 v-if="amountPaid > 0 && productType == 'gomla'">
                 Change: ${{ (amountPaid - calcTotalPrice).toFixed(2) }}
               </h4>
+              <h4 v-else-if="amountPaid > 0 && productType == '2ata3y'">
+                Change: ${{ (amountPaid - calcTotalPrice2).toFixed(2) }}
+              </h4>
             </div>
+          </div>
+          <div class="sell">
+            <button @click.prevent="sell">SELL</button>
           </div>
         </footer>
       </div>
@@ -108,6 +150,7 @@ export default {
       cart: [],
       totalPrice: 0,
       paymentMethod: "cash",
+      productType: "gomla",
       amountPaid: 0,
     };
   },
@@ -116,6 +159,11 @@ export default {
     calcTotalPrice() {
       return this.cart.reduce((total, item) => {
         return total + item.pricePerPack * item.q;
+      }, 0);
+    },
+    calcTotalPrice2() {
+      return this.cart.reduce((total, item) => {
+        return total + item.pricePerUnit * item.q;
       }, 0);
     },
   },
@@ -141,6 +189,7 @@ export default {
         // If item already in cart, just update quantity
         if (existingItem.q < existingItem.quantity) {
           existingItem.q++;
+          localStorage.setItem("Cart", JSON.stringify(this.cart));
         } else {
           alert("Not enough stock");
         }
@@ -148,11 +197,73 @@ export default {
         // Add new item to cart
         const newItem = { ...product, q: 1 }; // Initialize quantity to 1
         this.cart.push(newItem);
+        localStorage.setItem("Cart", JSON.stringify(this.cart));
       }
 
       this.productCode = ""; // Reset product code input
     },
+    removeFromCart(event) {
+      // remove item from cart
+      let id = event.target.parentElement.id;
+      this.cart = this.cart.filter((item) => item.code !== id);
+      localStorage.setItem("Cart", JSON.stringify(this.cart)); // Update storage
+    },
+    sell() {
+      // TODO:
+      // take each quantity of sold product and subtract it from the quantity in inventory
+      const check = confirm("Confirm Sell");
+      if (check) {
+        if (this.cart.length === 0) {
+          alert("Cart is empty. Please add products before selling.");
+          return;
+        }
+        // Update inventory based on cart items
+        this.cart.forEach((cartItem) => {
+          const inventoryItem = this.Inventory.find(
+            (item) => item.code === cartItem.code
+          );
 
+          if (inventoryItem) {
+            if (inventoryItem.quantity >= cartItem.q) {
+              inventoryItem.quantity -= cartItem.q; // Subtract quantity
+            } else {
+              alert(`Not enough stock for ${inventoryItem.name}`);
+            }
+          }
+        });
+
+        // Update local storage with the new inventory data
+        localStorage.setItem("Inventory", JSON.stringify(this.Inventory));
+
+        // Handle payment logic
+        if (this.paymentMethod === "cash") {
+          alert(
+            `Transaction completed! Total: $${this.calcTotalPrice.toFixed(2)}`
+          );
+        } else if (this.paymentMethod === "2agel") {
+          const customer = this.Accounts.find(
+            (acc) => acc.code === this.customerCode
+          );
+          if (customer) {
+            customer.due = (customer.due || 0) + this.calcTotalPrice;
+            localStorage.setItem("Accounts", JSON.stringify(this.Accounts));
+            alert(
+              `Sale recorded on credit for ${
+                customer.name
+              }. Due amount: $${customer.due.toFixed(2)}`
+            );
+          }
+        }
+        //
+        // take total price and add it to if cash dorg
+        // if 2agel take total price and add it to due of customer
+
+        // empty cart
+        this.cart = [];
+        localStorage.setItem("Cart", JSON.stringify(this.cart));
+        this.exportData();
+      }
+    },
     getCustomerName() {
       const customer = this.Accounts.find(
         (account) => account.code === this.customerCode
@@ -199,25 +310,65 @@ export default {
     this.Inventory = savedInventory ? savedInventory : [];
     const savedAccounts = JSON.parse(localStorage.getItem("Accounts"));
     this.Accounts = savedAccounts ? savedAccounts : [];
+    const savedCart = JSON.parse(localStorage.getItem("Cart"));
+    this.cart = savedCart ? savedCart : [];
   },
 };
 </script>
 
 <style lang="scss" scoped>
-#c_code {
-  width: 100px;
+header {
+  background-color: #0000ff11;
+  margin: 0 10px;
+  padding: 20px 10px;
+  .cCode {
+    background-color: #17f89322;
+    margin: 0 15px;
+    padding: 10px;
+  }
+  #c_code {
+    width: 50px;
+  }
+  .customer {
+    background-color: #17f89356;
+    margin: 0 15px;
+    padding: 10px;
+    font-weight: bold;
+  }
+  .precart {
+    background-color: #17f8931a;
+    padding: 5px 20px;
+    margin: 0 15px;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .productCode {
+    // background-color: red;
+    padding: 10px;
+    // text-align: left;
+    #p_code {
+      margin-right: 10px;
+      padding: 5px;
+      width: 100px;
+    }
+    button {
+      background-color: #17f86255;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      padding: 10px;
+      transition: background 0.2s ease-in-out;
+      &:hover {
+        background-color: #17ff62aa;
+      }
+    }
+  }
 }
-
-.customer {
-  background-color: #17f89322;
-  margin: 10px 15px 0;
-  padding: 10px;
-  font-weight: bold;
-}
-
 table {
   width: 100%;
-  border: 1px solid red;
+  margin: 0;
   padding: 10px;
   border: none;
   max-height: 65vh;
@@ -246,6 +397,7 @@ tfoot {
 }
 
 td {
+  position: relative;
   background-color: #17f89322;
   input {
     width: 50%;
@@ -261,13 +413,33 @@ th {
   padding: 10px 5px;
 }
 
+tfoot {
+  font-weight: bold;
+}
+
 footer {
-  margin-top: 20px;
+  margin-top: 0px;
 }
 
 .total-section {
   padding: 10px;
-  background-color: #17f893;
-  border-radius: 5px;
+  background-color: #0000ff11;
+  margin: 0 10px;
+}
+
+.remove {
+  font-weight: bold;
+  font-size: 0.8rem;
+  background-color: #fd565699;
+  border: none;
+  color: white;
+  text-align: center;
+  position: absolute;
+  left: 10px;
+  padding: 1px 4px;
+  transition: background 0.2s ease-in-out;
+  &:hover {
+    background-color: red;
+  }
 }
 </style>

@@ -21,6 +21,7 @@
               <th>Code</th>
               <th>Name</th>
               <th>Category</th>
+              <th>Quantity</th>
             </tr>
           </thead>
           <tbody>
@@ -33,6 +34,7 @@
               <td>{{ item.code }}</td>
               <td>{{ item.name }}</td>
               <td>{{ item.category }}</td>
+              <td>{{ item.quantity }}</td>
             </tr>
           </tbody>
           <tfoot></tfoot>
@@ -69,9 +71,9 @@
 form {
   border-radius: 10px;
   background-color: #80ccff;
-  min-width: 450px;
+  min-width: 650px;
   max-width: 100vw;
-  height: 50vh;
+  height: 55vh;
   display: flex;
   flex-flow: column nowrap;
   justify-content: space-between;
@@ -148,6 +150,16 @@ th {
 
 td {
   background-color: transparent;
+  &:first-of-type(1) {
+    width: 10%;
+  }
+  &:nth-of-type(2),
+  &:nth-of-type(3) {
+    width: 40%;
+  }
+  &:last-of-type(4) {
+    width: 5%;
+  }
 }
 
 td,

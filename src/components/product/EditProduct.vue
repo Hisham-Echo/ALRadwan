@@ -152,6 +152,7 @@ export default {
   },
   methods: {
     editProduct() {
+      // Validation
       // Validate form inputs
       if (
         !this.formValues.code ||
@@ -162,8 +163,30 @@ export default {
         !this.formValues.pricePerUnit ||
         !this.formValues.vendor
       ) {
-        alert("Code, Name, and Quantity are required fields.");
-        return;
+        return alert("Code, Name, and Quantity are required fields.");
+      }
+      // code
+      let code = Number(this.formValues.code);
+      // validate its a number
+      if (isNaN(code)) {
+        return alert("Code must be numbers only");
+      }
+      // validate its unique
+      for (let i = 0; i < this.Inventory.length; i++) {
+        if (this.Inventory[i].code == code) {
+          return alert("Code must be unique");
+        }
+      }
+      // quantity
+      let q = Number(this.formValues.quantity);
+      if (isNaN(q)) {
+        return alert("Quantity must be a number");
+      }
+      // price per pack & unit
+      let ppp = Number(this.formValues.pricePerPack);
+      let ppu = Number(this.formValues.pricePerUnit);
+      if (isNaN(ppp) || isNaN(ppu)) {
+        return alert("Prices must be numbers only");
       }
 
       // Find and update the product in the inventory

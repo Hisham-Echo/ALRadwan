@@ -44,7 +44,7 @@ nav {
   position: fixed;
   font-size: 1.1rem;
   width: 140px;
-  height: calc(100vh - 60px);
+  height: calc(100vh - 30px);
   background-color: #dfdfdf;
   display: flex;
   flex-flow: column nowrap;
@@ -97,6 +97,10 @@ nav {
       background-color: #42b983;
     }
   }
+}
+
+button {
+  cursor: pointer;
 }
 </style>
 

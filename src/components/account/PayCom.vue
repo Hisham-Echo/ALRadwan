@@ -101,9 +101,13 @@ export default {
   methods: {
     pay: function () {
       const code = this.formValues.code;
-      const amount = this.formValues.amount;
+      const amount = Number(this.formValues.amount);
+      if (isNaN(amount) || isNaN(Number(code))) {
+        return alert("Code and Amount must be a number");
+      }
       // confirm
       const check = confirm("Confirm Payment");
+      let flag = false;
       if (check) {
         for (let i = 0; i < this.Accounts.length; i++) {
           if (code == this.Accounts[i].code) {
@@ -114,10 +118,14 @@ export default {
             localStorage.setItem("Accounts", JSON.stringify(this.Accounts));
             this.$emit("export-data", this.Accounts);
             this.resetForm();
+            flag = true;
             break;
-          } else {
-            continue;
           }
+        }
+        if (flag) {
+          return alert("Payment done!");
+        } else {
+          return alert("Customer Not Found");
         }
       }
     },
