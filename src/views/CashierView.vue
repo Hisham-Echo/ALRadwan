@@ -142,6 +142,7 @@ export default {
     return {
       Accounts: [],
       Inventory: [],
+      Dorg: 0,
       //
       customerCode: "0",
       customerName: "",
@@ -217,21 +218,22 @@ export default {
           alert("Cart is empty. Please add products before selling.");
           return;
         }
-        // Update inventory based on cart items
-        this.cart.forEach((cartItem) => {
+        // Loop through cart and update inventory
+        for (let i = 0; i < this.cart.length; i++) {
+          const cartItem = this.cart[i];
           const inventoryItem = this.Inventory.find(
             (item) => item.code === cartItem.code
           );
-          // BUG
+
           if (inventoryItem) {
             if (inventoryItem.quantity >= cartItem.q) {
               inventoryItem.quantity -= cartItem.q; // Subtract quantity
             } else {
               alert(`Not enough stock for ${inventoryItem.name}`);
-              return;
+              return; // Exit sell() function immediately
             }
           }
-        });
+        }
 
         // Update local storage with the new inventory data
         localStorage.setItem("Inventory", JSON.stringify(this.Inventory));
@@ -241,6 +243,9 @@ export default {
           alert(
             `Transaction completed! Total: $${this.calcTotalPrice.toFixed(2)}`
           );
+          // add to dorg
+          this.Dorg = this.calcTotalPrice.toFixed(2);
+          localStorage.setItem("Dorg", this.Dorg);
         } else if (this.paymentMethod === "2agel") {
           const customer = this.Accounts.find(
             (acc) => acc.code === this.customerCode
@@ -255,9 +260,6 @@ export default {
             );
           }
         }
-        //
-        // take total price and add it to if cash dorg
-        // if 2agel take total price and add it to due of customer
 
         // empty cart
         this.cart = [];
@@ -313,6 +315,8 @@ export default {
     this.Accounts = savedAccounts ? savedAccounts : [];
     const savedCart = JSON.parse(localStorage.getItem("Cart"));
     this.cart = savedCart ? savedCart : [];
+    const savedDorg = JSON.parse(localStorage.getItem("Dorg"));
+    this.Dorg = savedDorg ? savedDorg : 0;
   },
 };
 </script>

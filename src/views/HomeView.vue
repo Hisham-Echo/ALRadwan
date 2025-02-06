@@ -10,12 +10,42 @@
       accept=".json"
       style="display: none"
     />
+    <div class="dorg">
+      <div>
+        Dorg: <span>${{ this.Dorg }}</span>
+      </div>
+      <div>
+        <button @click.prevent="resetDorg">Reset</button>
+      </div>
+    </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .home img {
   transform: rotate(180deg);
+}
+
+.dorg {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-flow: column nowrap;
+  gap: 20px;
+  font-size: 1.25rem;
+  font-weight: bolder;
+  margin: 10px;
+  padding: 20px;
+  // background-color: red;
+  span {
+    background-color: #0000ff60;
+    padding: 2px 10px;
+    display: inline-block;
+    min-width: 60px;
+  }
+  button {
+    background: red;
+  }
 }
 
 button {
@@ -25,7 +55,7 @@ button {
   margin: 0 5px;
   width: 150px;
   cursor: pointer;
-  opacity: 0.7;
+  opacity: 0.5;
   transition: opacity 0.2s ease-in-out;
   border-radius: 5px;
   color: white;
@@ -42,10 +72,23 @@ import HelloWorld from "@/components/HelloWorld.vue";
 
 export default {
   name: "HomeView",
+  data() {
+    return {
+      Dorg: 0,
+    };
+  },
   components: {
     HelloWorld,
   },
   methods: {
+    // empty Dorg
+    resetDorg() {
+      const check = confirm("ARE YOU SURE YOU WANT TO EMPTY DORG ?");
+      if (check) {
+        this.Dorg = 0;
+        localStorage.setItem("Dorg", this.Dorg);
+      }
+    },
     // Trigger the hidden file input for uploading data
     triggerFileInput() {
       this.$refs.fileInput.click(); // Opens the file input dialog
@@ -76,6 +119,10 @@ export default {
       // Reset the input value to allow re-uploading the same file
       event.target.value = "";
     },
+  },
+  mounted() {
+    const savedDorg = JSON.parse(localStorage.getItem("Dorg"));
+    this.Dorg = savedDorg ? savedDorg : 0;
   },
 };
 </script>

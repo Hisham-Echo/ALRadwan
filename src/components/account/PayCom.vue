@@ -91,6 +91,7 @@ export default {
       // ## main vars ##
       Accounts: [],
       Inventory: [],
+      Dorg: 0,
       // ###############
       formValues: {
         code: "",
@@ -113,9 +114,12 @@ export default {
           if (code == this.Accounts[i].code) {
             // decrease the due
             this.Accounts[i].due -= amount;
+            // add to dorg
+            this.Dorg += amount;
             // save changes
             this.$emit("update-accounts", this.Accounts); // Emit a 'update-inventory' event to the parent
             localStorage.setItem("Accounts", JSON.stringify(this.Accounts));
+            localStorage.setItem("Dorg", this.Dorg);
             this.$emit("export-data", this.Accounts);
             this.resetForm();
             flag = true;
@@ -144,6 +148,8 @@ export default {
     this.Inventory = savedInventory ? savedInventory : []; // Initialize empty array if null
     const savedAccounts = JSON.parse(localStorage.getItem("Accounts"));
     this.Accounts = savedAccounts ? savedAccounts : []; // Initialize empty array if null
+    const savedDorg = JSON.parse(localStorage.getItem("Dorg"));
+    this.Dorg = savedDorg ? savedDorg : 0;
   },
 };
 </script>
