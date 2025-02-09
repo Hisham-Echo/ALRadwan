@@ -86,10 +86,11 @@
                       "
                     />
                   </td>
-                  <td>${{ item.pricePerPack }}</td>
-                  <td>${{ item.pricePerUnit }}</td>
+                  <td>$ {{ item.pricePerPack }}</td>
+                  <td>$ {{ item.pricePerUnit }}</td>
                   <td>
-                    ${{
+                    $
+                    {{
                       (
                         item.q *
                         (productType === "gomla"

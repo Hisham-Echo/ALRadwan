@@ -71,8 +71,8 @@
             <td>{{ item.quantity }}</td>
             <td>{{ item.unitsPerPack }}</td>
             <td>{{ item.unitQuantity }}</td>
-            <td>${{ item.pricePerPack }}</td>
-            <td>${{ item.pricePerUnit }}</td>
+            <td>$ {{ item.pricePerPack }}</td>
+            <td>$ {{ item.pricePerUnit }}</td>
             <td>{{ item.vendor }}</td>
           </tr>
         </tbody>

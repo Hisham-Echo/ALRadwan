@@ -76,13 +76,13 @@
             <td>{{ item.name }}</td>
             <td>{{ item.phone }}</td>
             <td>{{ item.address }}</td>
-            <td>{{ item.due }}</td>
+            <td>$ {{ item.due }}</td>
           </tr>
         </tbody>
         <tfoot>
           <tr>
             <td colspan="3">Total Due</td>
-            <td colspan="2">{{ calcTotalDue() }}</td>
+            <td colspan="2">$ {{ calcTotalDue() }}</td>
           </tr>
         </tfoot>
       </table>
