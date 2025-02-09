@@ -185,7 +185,7 @@ export default {
         name: "",
         phone: "",
         address: "",
-        due: Number,
+        due: +"",
       };
     },
   },
