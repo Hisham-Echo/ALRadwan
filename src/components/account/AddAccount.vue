@@ -165,6 +165,9 @@ export default {
       }
       // save
       this.Accounts.push({ ...this.formValues });
+      this.Accounts[this.Accounts.length - 1].due = Number(
+        this.Accounts[this.Accounts.length - 1].due
+      );
       this.$emit("update-accounts", this.Accounts); // Emit a 'update-inventory' event to the parent
       localStorage.setItem("Accounts", JSON.stringify(this.Accounts));
       this.$emit("export-data", this.Accounts);
@@ -179,7 +182,7 @@ export default {
         name: "",
         phone: "",
         address: "",
-        due: "",
+        due: 0,
       };
     },
   },

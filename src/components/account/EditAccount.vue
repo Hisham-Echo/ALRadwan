@@ -121,7 +121,7 @@ export default {
         name: "",
         phone: "",
         address: "",
-        due: "",
+        due: Number,
       },
     };
   },
@@ -130,7 +130,6 @@ export default {
       // Validation
       // Validate inputs
       if (
-        !this.formValues.code ||
         !this.formValues.name ||
         !this.formValues.phone ||
         !this.formValues.address ||
@@ -138,18 +137,6 @@ export default {
       ) {
         alert("Please fill out all fields.");
         return;
-      }
-      // code
-      let code = Number(this.formValues.code);
-      // validate its a number
-      if (isNaN(code)) {
-        return alert("Code must be numbers only");
-      }
-      // validate its unique
-      for (let i = 0; i < this.Accounts.length; i++) {
-        if (this.Accounts[i].code == code) {
-          return alert("Code must be unique");
-        }
       }
       // due
       let d = Number(this.formValues.due);
@@ -171,6 +158,9 @@ export default {
 
       if (accountIndex !== -1 && check) {
         this.Accounts.splice(accountIndex, 1, { ...this.formValues });
+        this.Accounts[accountIndex].due = Number(
+          this.Accounts[accountIndex].due
+        );
 
         // Save updated data to localStorage
         localStorage.setItem("Accounts", JSON.stringify(this.Accounts));
@@ -195,7 +185,7 @@ export default {
         name: "",
         phone: "",
         address: "",
-        due: "",
+        due: Number,
       };
     },
   },
