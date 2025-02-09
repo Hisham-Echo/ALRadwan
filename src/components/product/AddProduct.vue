@@ -21,12 +21,21 @@
           />
         </div>
         <div class="field">
-          <label for="quantity">Quantity</label>
+          <label for="quantity">Quantity of Packs</label>
           <input
             type="text"
             name="quantity"
             id="quantity"
             v-model="formValues.quantity"
+          />
+        </div>
+        <div class="field">
+          <label for="upp">Units Per Pack</label>
+          <input
+            type="text"
+            name="upp"
+            id="upp"
+            v-model="formValues.unitsPerPack"
           />
         </div>
         <div class="field">
@@ -56,7 +65,6 @@
             v-model="formValues.vendor"
           />
         </div>
-        <!-- <div class="errors">{{ validate }}</div> -->
       </div>
       <button @click.prevent="addProduct" class="add">ADD</button>
       <button class="cancel" @click.prevent="closeComponent">CLOSE</button>
@@ -90,7 +98,7 @@ input {
 
 .input h2 {
   border-radius: 10px 10px 0 0;
-  background-color: #29db8b;
+  background-color: #22c27a;
   color: white;
   margin: 0;
   padding: 15px;
@@ -146,6 +154,8 @@ export default {
         name: "",
         category: "",
         quantity: "",
+        unitsPerPack: "",
+        unitQuantity: this.quantity * this.unitsPerPack,
         pricePerPack: "",
         pricePerUnit: "",
         vendor: "",
@@ -161,6 +171,7 @@ export default {
         !this.formValues.name ||
         !this.formValues.category ||
         !this.formValues.quantity ||
+        !this.formValues.unitsPerPack ||
         !this.formValues.pricePerPack ||
         !this.formValues.pricePerUnit ||
         !this.formValues.vendor
@@ -181,9 +192,12 @@ export default {
       }
       // quantity
       let q = Number(this.formValues.quantity);
-      if (isNaN(q)) {
+      let upp = Number(this.formValues.unitsPerPack);
+      if (isNaN(q) || isNaN(upp)) {
         return alert("Quantity must be a number");
       }
+      this.formValues.unitQuantity =
+        Number(this.formValues.quantity) * Number(this.formValues.unitsPerPack);
       // price per pack & unit
       let ppp = Number(this.formValues.pricePerPack);
       let ppu = Number(this.formValues.pricePerUnit);

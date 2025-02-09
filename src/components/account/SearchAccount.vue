@@ -40,7 +40,9 @@
         </table>
       </div>
       <div>
-        <button @click.prevent="searchAccount" class="search">SELECT</button>
+        <button @click.prevent="editSelectedAccount" class="search">
+          SELECT
+        </button>
         <button class="cancel" @click.prevent="closeComponent">CLOSE</button>
       </div>
     </form>
@@ -179,7 +181,54 @@ export default {
       Accounts: [],
       searchField: "",
       selected: [],
+      selectedAccount: null,
     };
+  },
+  props: {
+    Account: Array,
+  },
+  methods: {
+    toggleActive(account) {
+      const index = this.selected.findIndex(
+        (selectedItem) => selectedItem.code === account.code
+      );
+      if (index > -1) {
+        this.selected.splice(index, 1); // Remove from selection
+      } else {
+        this.selected = [account]; // Only one account selected at a time for editing
+      }
+    },
+    selectAccount(account) {
+      this.selectedAccount = account;
+    },
+    // isSelected(account) {
+    //   return this.selectedAccount?.code === account.code;
+    // },
+    confirmSelection() {
+      if (!this.selectedAccount) {
+        alert("Please select an account.");
+        return;
+      }
+      this.$emit("edit", this.selectedAccount);
+    },
+    isSelected(account) {
+      return this.selected.length > 0 && this.selected[0].code === account.code;
+    },
+    editSelectedAccount() {
+      if (this.selected.length === 0) {
+        alert("Please select an account to edit.");
+        return;
+      }
+
+      this.$emit("edit", this.selected[0]); // Emit the selected account for editing
+    },
+    closeComponent() {
+      this.$emit("close"); // Emit a close event to the parent
+    },
+    resetForm() {
+      this.searchField = "";
+      this.selected = [];
+    },
   },
   computed: {
     filteredAccounts() {
@@ -195,33 +244,33 @@ export default {
       );
     },
   },
-  methods: {
-    toggleActive(account) {
-      const index = this.selected.findIndex(
-        (selectedItem) => selectedItem.code === account.code
-      );
-      if (index > -1) {
-        this.selected.splice(index, 1); // Remove from selection
-      } else {
-        this.selected.push(account); // Add to selection
-      }
-    },
-    isSelected(account) {
-      return this.selected.some(
-        (selectedItem) => selectedItem.code === account.code
-      );
-    },
-    searchAccount() {
-      this.$emit("select", this.selected); // Emit selected accounts to the parent
-    },
-    closeComponent() {
-      this.$emit("close"); // Emit a close event to the parent
-    },
-    resetForm() {
-      this.searchField = "";
-      this.selected = [];
-    },
-  },
+  // methods: {
+  //   toggleActive(account) {
+  //     const index = this.selected.findIndex(
+  //       (selectedItem) => selectedItem.code === account.code
+  //     );
+  //     if (index > -1) {
+  //       this.selected.splice(index, 1); // Remove from selection
+  //     } else {
+  //       this.selected.push(account); // Add to selection
+  //     }
+  //   },
+  //   isSelected(account) {
+  //     return this.selected.some(
+  //       (selectedItem) => selectedItem.code === account.code
+  //     );
+  //   },
+  //   searchAccount() {
+  //     this.$emit("select", this.selected); // Emit selected accounts to the parent
+  //   },
+  //   closeComponent() {
+  //     this.$emit("close"); // Emit a close event to the parent
+  //   },
+  //   resetForm() {
+  //     this.searchField = "";
+  //     this.selected = [];
+  //   },
+  // },
   mounted() {
     const savedAccounts = JSON.parse(localStorage.getItem("Accounts"));
     this.Accounts = savedAccounts ? savedAccounts : []; // Load accounts from localStorage

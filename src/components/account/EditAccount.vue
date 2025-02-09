@@ -152,7 +152,7 @@ export default {
         }
       }
       // due
-      let d = Number(this.formValues.ddue);
+      let d = Number(this.formValues.due);
       if (isNaN(d)) {
         return alert("Due must be a number");
       }

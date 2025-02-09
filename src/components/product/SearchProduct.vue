@@ -41,7 +41,7 @@
         </table>
       </div>
       <div>
-        <button @click.prevent="searchProduct" class="search">SELECT</button>
+        <!-- <button @click.prevent="searchProduct" class="search">SELECT</button> -->
         <button class="cancel" @click.prevent="closeComponent">CLOSE</button>
       </div>
     </form>

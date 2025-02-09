@@ -27,12 +27,21 @@
           />
         </div>
         <div class="field">
-          <label for="quantity">Quantity</label>
+          <label for="quantity">Quantity of Packs</label>
           <input
             type="text"
             name="quantity"
             id="quantity"
             v-model="formValues.quantity"
+          />
+        </div>
+        <div class="field">
+          <label for="upp">Units Per Pack</label>
+          <input
+            type="text"
+            name="upp"
+            id="upp"
+            v-model="formValues.unitsPerPack"
           />
         </div>
         <div class="field">
@@ -144,6 +153,8 @@ export default {
         name: "",
         category: "",
         quantity: "",
+        unitsPerPack: "",
+        unitQuantity: "",
         pricePerPack: "",
         pricePerUnit: "",
         vendor: "",
@@ -159,6 +170,7 @@ export default {
         !this.formValues.name ||
         !this.formValues.category ||
         !this.formValues.quantity ||
+        !this.formValues.unitsPerPack ||
         !this.formValues.pricePerPack ||
         !this.formValues.pricePerUnit ||
         !this.formValues.vendor
@@ -170,12 +182,6 @@ export default {
       // validate its a number
       if (isNaN(code)) {
         return alert("Code must be numbers only");
-      }
-      // validate its unique
-      for (let i = 0; i < this.Inventory.length; i++) {
-        if (this.Inventory[i].code == code) {
-          return alert("Code must be unique");
-        }
       }
       // quantity
       let q = Number(this.formValues.quantity);
@@ -197,6 +203,9 @@ export default {
       const check = confirm("Confirm editing the product");
 
       if (index > -1 && check) {
+        this.formValues.unitQuantity =
+          Number(this.formValues.quantity) *
+          Number(this.formValues.unitsPerPack);
         this.Inventory[index] = { ...this.formValues };
         localStorage.setItem("Inventory", JSON.stringify(this.Inventory));
 
@@ -204,6 +213,7 @@ export default {
         this.$emit("update-inventory", this.Inventory);
         this.$emit("export-data", this.Inventory);
         this.closeComponent();
+        alert("Product Edited successfully");
       } else {
         alert("Product not found.\nOperation canceled");
       }

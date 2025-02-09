@@ -79,13 +79,32 @@
                       type="number"
                       v-model="item.q"
                       :min="1"
-                      :max="item.quantity"
+                      :max="
+                        productType === 'gomla'
+                          ? item.stockPackages
+                          : item.stockUnits
+                      "
                     />
                   </td>
-                  <td>{{ item.pricePerPack }}</td>
-                  <td>{{ item.pricePerUnit }}</td>
-                  <td>{{ (item.q * item.pricePerPack).toFixed(2) }}</td>
-                  <td>{{ item.quantity }}</td>
+                  <td>${{ item.pricePerPack }}</td>
+                  <td>${{ item.pricePerUnit }}</td>
+                  <td>
+                    ${{
+                      (
+                        item.q *
+                        (productType === "gomla"
+                          ? item.pricePerPack
+                          : item.pricePerUnit)
+                      ).toFixed(2)
+                    }}
+                  </td>
+                  <td>
+                    {{
+                      productType === "gomla"
+                        ? item.stockPackages
+                        : item.stockUnits
+                    }}
+                  </td>
                 </tr>
               </tbody>
               <tfoot>
@@ -187,21 +206,31 @@ export default {
       const existingItem = this.cart.find((item) => item.code === product.code);
 
       if (existingItem) {
-        // If item already in cart, just update quantity
-        if (existingItem.q < existingItem.quantity) {
-          existingItem.q++;
-          localStorage.setItem("Cart", JSON.stringify(this.cart));
+        if (this.productType == "gomla") {
+          if (existingItem.q < product.quantity) {
+            existingItem.q++; // Add one package
+          } else {
+            alert("Not enough packages in stock");
+          }
         } else {
-          alert("Not enough stock");
+          if (existingItem.q < product.unitQuantity) {
+            existingItem.q++; // Add one unit
+          } else {
+            alert("Not enough units in stock");
+          }
         }
       } else {
-        // Add new item to cart
-        const newItem = { ...product, q: 1 }; // Initialize quantity to 1
+        const newItem = {
+          ...product,
+          q: 1,
+          stockPackages: product.quantity, // Keep track of original stock
+          stockUnits: product.unitQuantity,
+        };
         this.cart.push(newItem);
-        localStorage.setItem("Cart", JSON.stringify(this.cart));
       }
 
-      this.productCode = ""; // Reset product code input
+      localStorage.setItem("Cart", JSON.stringify(this.cart));
+      this.productCode = ""; // Reset input
     },
     removeFromCart(event) {
       // remove item from cart
@@ -226,11 +255,27 @@ export default {
           );
 
           if (inventoryItem) {
-            if (inventoryItem.quantity >= cartItem.q) {
-              inventoryItem.quantity -= cartItem.q; // Subtract quantity
+            if (this.productType === "gomla") {
+              // Selling by package
+              if (inventoryItem.quantity >= cartItem.q) {
+                inventoryItem.quantity -= cartItem.q;
+                inventoryItem.unitQuantity -=
+                  cartItem.q * inventoryItem.unitsPerPack;
+              } else {
+                alert(`Not enough stock for ${inventoryItem.name}`);
+                return;
+              }
             } else {
-              alert(`Not enough stock for ${inventoryItem.name}`);
-              return; // Exit sell() function immediately
+              // Selling by unit
+              if (inventoryItem.unitQuantity >= cartItem.q) {
+                inventoryItem.unitQuantity -= cartItem.q;
+                inventoryItem.quantity = Math.floor(
+                  inventoryItem.unitQuantity / inventoryItem.unitsPerPack
+                );
+              } else {
+                alert(`Not enough stock for ${inventoryItem.name}`);
+                return;
+              }
             }
           }
         }
@@ -240,9 +285,7 @@ export default {
 
         // Handle payment logic
         if (this.paymentMethod === "cash") {
-          alert(
-            `Transaction completed! Total: $${this.calcTotalPrice.toFixed(2)}`
-          );
+          alert(`Transaction completed!`);
           // add to dorg
           this.Dorg = this.calcTotalPrice.toFixed(2);
           localStorage.setItem("Dorg", this.Dorg);

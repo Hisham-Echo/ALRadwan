@@ -24,6 +24,7 @@
       v-if="isAddAccountVisible"
       @update-accounts="updateAccounts"
       @export-data="exportData"
+      @edit="editAccount"
       @close="toggleChildComponent"
     />
     <EditAccount
@@ -69,7 +70,7 @@
           <tr
             v-for="(item, index) in this.Accounts"
             :key="index"
-            @click="handleRowClick(item)"
+            @dblclick="handleRowClick(item)"
           >
             <td>{{ item.code }}</td>
             <td>{{ item.name }}</td>
@@ -219,6 +220,11 @@ export default {
     PayCom,
   },
   methods: {
+    editAccount(selectedAccount) {
+      this.currentAccount = selectedAccount;
+      this.isSearchAccountVisible = false;
+      this.isEditAccountVisible = true;
+    },
     toggleChildComponent: function (event) {
       if (event == undefined) {
         // close opened component

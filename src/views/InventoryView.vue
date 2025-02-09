@@ -52,6 +52,8 @@
             <th>Name</th>
             <th>Category</th>
             <th>Quantity</th>
+            <th>Units Per Pack</th>
+            <th>Total Units</th>
             <th>Price per pack</th>
             <th>Price per unit</th>
             <th>Vendor</th>
@@ -61,14 +63,16 @@
           <tr
             v-for="(item, index) in this.Inventory"
             :key="index"
-            @click="handleRowClick(item)"
+            @dblclick="handleRowClick(item)"
           >
             <td>{{ item.code }}</td>
             <td>{{ item.name }}</td>
             <td>{{ item.category }}</td>
             <td>{{ item.quantity }}</td>
-            <td>{{ item.pricePerPack }}</td>
-            <td>{{ item.pricePerUnit }}</td>
+            <td>{{ item.unitsPerPack }}</td>
+            <td>{{ item.unitQuantity }}</td>
+            <td>${{ item.pricePerPack }}</td>
+            <td>${{ item.pricePerUnit }}</td>
             <td>{{ item.vendor }}</td>
           </tr>
         </tbody>
